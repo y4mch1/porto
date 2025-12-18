@@ -319,7 +319,7 @@
                     <div class="floating-badge float-1">
                         <i class="fab fa-unity badge-icon"></i>
                         <div>
-                            <span class="badge-text">Unity Expert</span>
+                            <span class="badge-text">Unity</span>
                             <span class="badge-sub">VR/AR Dev</span>
                         </div>
                     </div>
@@ -474,6 +474,20 @@
                     <div class="card-arrow">View Details →</div>
                 </div>
             </div>
+
+            <!-- Project 5: AR IKN -->
+            <div class="project-card reveal hover-trigger" onclick="openModal(5)">
+                <div class="card-media">
+                    <!-- Menggunakan placeholder image karena belum ada video YouTube -->
+                    <iframe src="https://www.youtube.com/embed/M8Z1SZPdD18?mute=1&controls=0&showinfo=0" frameborder="0"></iframe>
+                </div>
+                <div class="card-content">
+                    <div class="card-tags"><span class="tag">Augmented Reality</span><span class="tag">Vuforia</span></div>
+                    <h3 class="card-title">AR IKN Visualization</h3>
+                    <p class="card-desc">Interactive AR application to visualize detailed 3D models of IKN buildings with dynamic day-night cycles.</p>
+                    <div class="card-arrow">View Details →</div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -617,6 +631,21 @@
                 • <strong>Level Progression:</strong> Increasingly complex puzzles requiring spatial logic.
                 • <strong>Cozy Atmosphere:</strong> Relaxing visuals and audio design.`,
                 link: "https://drive.google.com/uc?export=download&id=1LdSlb9_CasUxLN2Aq6OXvatYg7rdcTsC"
+            },
+            // --- TAMBAHKAN BAGIAN INI (Project 5) ---
+            5: {
+                title: "AR IKN Visualization 2025",
+                video: "", // Kosongkan jika belum ada video, modal akan otomatis menyesuaikan
+                desc: `A Tech Exploration Project utilizing Vuforia to visualize detailed 3D models of Indonesia's new capital city (IKN).
+
+                <strong>Tech Stack:</strong> Unity, C#, Vuforia, UI Toolkit
+
+                <strong>Key Features:</strong>
+                • <strong>Interactive Visualization:</strong> Users can place and view detailed IKN buildings in the real world via AR.
+                • <strong>Touch Navigation:</strong> Implemented complete touch controls (zoom in/out, rotate, and reset view).
+                • <strong>Information System:</strong> Interaction system allowing users to tap buildings to trigger detailed popup information.
+                • <strong>Day-Night Cycle:</strong> Dynamic lighting simulation with a UI slider, allowing users to adjust the atmosphere from morning to night in real-time.`,
+                link: "https://drive.google.com/file/d/1-mLJ3Wpv-An1k3O5VzQU83W888tGMVWA/view?usp=sharing" // Masukkan link download jika ada
             }
         };
 
@@ -633,7 +662,7 @@
             modalDesc.innerHTML = data.desc;
             if (data.video) { modalVideo.style.display = "block"; modalVideo.src = data.video; }
             else { modalVideo.style.display = "none"; modalVideo.src = ""; }
-            modalBtn.onclick = function() { if(data.link) window.location.href = data.link; else alert('Not published to public yet'); };
+            modalBtn.onclick = function() { if(data.link) window.location.href = data.link; else alert('Confidential'); };
             modal.classList.add('active'); document.body.style.overflow = 'hidden';
         }
 
@@ -657,4 +686,3 @@
     </script>
 </body>
 </html>
-
