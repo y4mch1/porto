@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechef: AI Ingredient Detection</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            line-height: 1.6;
+            color: #24292e;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Headings */
+        h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+            margin-top: 30px;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 1.25em;
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .badges {
+            margin-bottom: 20px;
+        }
+
+        .badges img {
+            margin-right: 5px;
+            margin-bottom: 5px;
+            vertical-align: middle;
+        }
+
+        blockquote {
+            margin: 20px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 0.25em solid #dfe2e5;
+            font-style: italic;
+            background-color: #fafbfc;
+            padding: 10px 15px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        p { margin-bottom: 16px; }
+        ul { padding-left: 2em; margin-bottom: 16px; }
+        li { margin-bottom: 5px; }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .img-caption {
+            text-align: center;
+            font-style: italic;
+            color: #586069;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 30px;
+        }
+        pre {
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            border: 1px solid #e1e4e8;
+        }
+        code { font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; }
+
+        hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 30px 0;
+            background-color: #e1e4e8;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Rechef: Mobile Ingredient Detection System</h1>
+
+        <div class="badges">
+            <img src="https://img.shields.io/badge/TensorFlow-2.x-orange?style=for-the-badge&logo=tensorflow" alt="TensorFlow Badge">
+            <img src="https://img.shields.io/badge/Model-MobileNetV2-blue?style=for-the-badge&logo=google" alt="MobileNet Badge">
+            <img src="https://img.shields.io/badge/Python-3.10-yellow?style=for-the-badge&logo=python" alt="Python Badge">
+            <img src="https://img.shields.io/badge/Data-Web_Scraping-green?style=for-the-badge&logo=googlechrome" alt="Data Badge">
+        </div>
+
+        <h3>Our Team</h3>
+        <img src="https://cdn.discordapp.com/attachments/1170650328950124618/1479005662842323086/image.png?ex=69aa76dc&is=69a9255c&hm=276e1f48164521e1b643caeb7a67cfed139ad1ff55b1efabd60b05621d58964a&" alt="Rechef Team Photo">
+        <p class="img-caption">Bangkit Academy Capstone Team - Rechef Project</p>
+
+        <blockquote>
+            "An intelligent ingredient classification system achieving >90% accuracy using Transfer Learning on MobileNetV2. Designed to help users identify food ingredients instantly for recipe recommendations."
+        </blockquote>
+        <hr>
+        <h2>Project Overview</h2>
+        <p>Rechef is a computer vision component for a recipe recommendation app. It solves the problem of "What can I cook with these ingredients?" by automatically identifying raw food materials from camera input.</p>
+        <p>The system is built on <strong>MobileNetV2</strong>, a lightweight architecture optimized for mobile devices, ensuring fast inference times even on smartphones. The model was trained on a custom-scraped dataset of 8 common ingredient classes.</p>
+        <h3>App Demo / Prediction Result</h3>
+        <iframe 
+                src="https://www.youtube.com/embed/-u7hZnruOmY" 
+                title="Rechef App Demo" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        <p class="img-caption">(Model successfully identifying ingredients with high confidence scores)</p>
+
+        <hr>
+
+        <!-- Tech Stack -->
+        <h2>Tech Stack & Methodology</h2>
+        <ul>
+            <li><strong>Core Framework:</strong> TensorFlow & Keras.</li>
+            <li><strong>Base Architecture:</strong> MobileNetV2 (Pre-trained on ImageNet).</li>
+            <li><strong>Technique:</strong> Transfer Learning with Fine-Tuning (Unfreezing top 50 layers).</li>
+            <li><strong>Optimization:</strong> Adam Optimizer with Learning Rate Scheduler & ReduceLROnPlateau.</li>
+            <li><strong>Data Source:</strong> Custom dataset collected via Web Scraping (~4000 images).</li>
+        </ul>
+
+        <hr>
+
+        <!-- Development Process -->
+        <h2>Development Pipeline</h2>
+
+        <h3>1. Data Collection & Preprocessing</h3>
+        <p>Data was collected through web scraping to ensure a diverse representation of ingredients (different lighting, angles, and states).</p>
+        <ul>
+            <li><strong>Data Augmentation:</strong> Applied aggressive augmentation (Shear, Zoom, Flip, Rotation 20°) to prevent overfitting and improve generalization.</li>
+            <li><strong>Resizing:</strong> All inputs normalized to 224x224 pixels to match MobileNetV2 requirements.</li>
+        </ul>
+
+        <h3>2. Model Architecture Strategy</h3>
+        <p>I utilized a <strong>Transfer Learning</strong> approach to leverage features learned from ImageNet. To adapt the model for specific ingredients, I added a custom classification head:</p>
+        <pre><code>
+# Custom Head Architecture
+model = Sequential([
+    base_model, # MobileNetV2 (Fine-tuned)
+    GlobalAveragePooling2D(),
+    Dense(256, activation='relu', kernel_regularizer=l2(0.01)),
+    Dropout(0.5), # To prevent overfitting
+    Dense(num_classes, activation='softmax')
+])
+        </code></pre>
+    </div>
+
+</body>
+</html>

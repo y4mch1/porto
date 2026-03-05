@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local RAG: Intelligent Document Analysis</title>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #24292e;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Headings */
+        h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+            margin-top: 30px;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 1.25em;
+            margin-top: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Badges */
+        .badges { margin-bottom: 20px; }
+        .badges img { margin-right: 5px; margin-bottom: 5px; vertical-align: middle; }
+
+        /* Blockquote & Callout */
+        .wip-callout {
+            background-color: #fff8c5;
+            border: 1px solid #e3d069;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        blockquote {
+            margin: 20px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 0.25em solid #dfe2e5;
+            font-style: italic;
+            background-color: #fafbfc;
+            padding: 10px 15px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Lists */
+        ul { padding-left: 2em; margin-bottom: 16px; }
+        li { margin-bottom: 8px; }
+
+        /* Custom Flowchart Style (CSS-only) */
+        .pipeline-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            gap: 10px;
+        }
+
+        .pipeline-step {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 15px;
+            width: 18%;
+            text-align: center;
+            font-size: 0.85em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            min-width: 120px;
+        }
+
+        .pipeline-step strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #0366d6;
+        }
+
+        .arrow {
+            font-size: 1.5em;
+            color: #586069;
+        }
+
+        /* Code Block */
+        pre {
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            border: 1px solid #e1e4e8;
+        }
+        
+        hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 30px 0;
+            background-color: #e1e4e8;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <h1>Local RAG: Intelligent Document Analysis</h1>
+
+        <div class="badges">
+            <img src="https://img.shields.io/badge/LangChain-Integration-blue?style=for-the-badge&logo=langchain" alt="LangChain">
+            <img src="https://img.shields.io/badge/LLM-Ollama_Llama3.1-orange?style=for-the-badge&logo=ollama" alt="Ollama">
+            <img src="https://img.shields.io/badge/Embeddings-HuggingFace-yellow?style=for-the-badge&logo=huggingface" alt="HuggingFace">
+            <img src="https://img.shields.io/badge/Status-In_Development-lightgrey?style=for-the-badge" alt="Status">
+        </div>
+
+        <!-- WIP Notice -->
+        <div class="wip-callout">
+            <strong>🚧 Work in Progress:</strong> This project is currently under active development. The documentation below reflects the current backend architecture and logic implementation (v0.1).
+        </div>
+
+        <blockquote>
+            "A privacy-focused document summarization tool powered by Llama 3.1. It uses K-Means Clustering to intelligently select the most relevant document chunks, ensuring comprehensive context coverage without hitting token limits."
+        </blockquote>
+
+        <hr>
+
+        <!-- Overview -->
+        <h2>Project Overview</h2>
+        <p>This tool is designed to analyze complex PDF documents locally without sending data to the cloud. Unlike standard RAG (Retrieval-Augmented Generation) systems that simply fetch the "top-k" similar chunks, this system employs <strong>Semantic Clustering</strong>.</p>
+        <p>By clustering document embeddings, the system ensures that the information fed into the LLM is diverse and representative of the entire document, reducing redundancy and improving summary quality.</p>
+
+        <hr>
+
+        <!-- Architecture (Ganti Screenshot) -->
+        <h2>System Architecture & Pipeline</h2>
+        <p>The system follows a strict ETL (Extract, Transform, Load) pipeline optimized for local execution:</p>
+
+        <!-- CSS Flowchart -->
+        <div class="pipeline-container">
+            <div class="pipeline-step">
+                <strong>1. Ingestion</strong>
+                PyPDFLoader reads raw PDF files.
+            </div>
+            <div class="arrow">→</div>
+            <div class="pipeline-step">
+                <strong>2. Chunking</strong>
+                Recursive Character Splitter (2k tokens).
+            </div>
+            <div class="arrow">→</div>
+            <div class="pipeline-step">
+                <strong>3. Embedding</strong>
+                BAAI/bge-base-en (HuggingFace).
+            </div>
+            <div class="arrow">→</div>
+            <div class="pipeline-step">
+                <strong>4. Clustering</strong>
+                K-Means selection (The "Brain").
+            </div>
+            <div class="arrow">→</div>
+            <div class="pipeline-step">
+                <strong>5. Inference</strong>
+                Llama 3.1 via Ollama.
+            </div>
+        </div>
+
+        <h3>Why K-Means Clustering?</h3>
+        <p>In the code logic <code>EmbeddingsClusteringFilter</code>, instead of just taking the first 5 pages, the system:</p>
+        <ul>
+            <li>Converts all text chunks into vector embeddings.</li>
+            <li>Groups these vectors into clusters based on semantic meaning.</li>
+            <li>Selects the "Centroid" (most representative chunk) from each cluster.</li>
+            <li><strong>Result:</strong> The LLM receives a context that covers different topics within the PDF, rather than repeating the same topic 5 times.</li>
+        </ul>
+
+        <hr>
+
+        <!-- Technical Details -->
+        <h2>Key Technical Features</h2>
+
+        <h3>1. Local Privacy First</h3>
+        <p>The system runs entirely offline using <strong>Ollama</strong>. No API keys are required, and sensitive documents (e.g., financial reports, medical records) never leave the local machine.</p>
+
+        <h3>2. Strict Hallucination Control</h3>
+        <p>The prompt engineering includes strict guardrails to prevent the LLM from making things up:</p>
+        <pre><code>
+# System Prompt Logic
+"guidelines": 
+1. Jawab hanya berdasarkan teks konteks.
+2. Pertahankan penamaan tabel dan satuan angka.
+3. Jika data tidak ada, tulis 'Informasi tidak ditemukan'.
+4. Tutup jawaban dengan bagian 'Validasi'.
+        </code></pre>
+
+        <h3>3. Dynamic Resource Handling</h3>
+        <p>The script automatically detects hardware capabilities:</p>
+        <ul>
+            <li><strong>CUDA Support:</strong> Automatically utilizes GPU if available for faster embedding.</li>
+            <li><strong>Fallback:</strong> Gracefully degrades to CPU mode if no GPU is found.</li>
+        </ul>
+
+        <hr>
+
+        <!-- Roadmap -->
+        <h2>Future Roadmap</h2>
+        <ul>
+            <li>[ ] <strong>GUI Implementation:</strong> Building a Streamlit/Gradio interface for file upload.</li>
+            <li>[ ] <strong>Multi-file Support:</strong> Enabling analysis across multiple PDFs simultaneously.</li>
+            <li>[ ] <strong>Citation Engine:</strong> Clicking a summary point highlights the source PDF page.</li>
+        </ul>
+
+    </div>
+
+</body>
+</html>
