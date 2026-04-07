@@ -16,7 +16,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 40px 20px;
         }
@@ -92,7 +92,7 @@
             text-align: center;
             font-size: 0.85em;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            min-width: 120px;
+            min-width: 140px;
         }
 
         .pipeline-step strong {
@@ -104,6 +104,27 @@
         .arrow {
             font-size: 1.5em;
             color: #586069;
+        }
+
+        .demo-video {
+            margin: 20px 0;
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background-color: #000;
+        }
+
+        .demo-video iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 8px;
         }
 
         /* Code Block */
@@ -136,102 +157,99 @@
             <img src="https://img.shields.io/badge/LangChain-Integration-blue?style=for-the-badge&logo=langchain" alt="LangChain">
             <img src="https://img.shields.io/badge/LLM-Ollama_Llama3.1-orange?style=for-the-badge&logo=ollama" alt="Ollama">
             <img src="https://img.shields.io/badge/Embeddings-HuggingFace-yellow?style=for-the-badge&logo=huggingface" alt="HuggingFace">
+            <img src="https://img.shields.io/badge/VectorStore-FAISS-red?style=for-the-badge" alt="FAISS">
             <img src="https://img.shields.io/badge/Status-In_Development-lightgrey?style=for-the-badge" alt="Status">
         </div>
 
         <!-- WIP Notice -->
         <div class="wip-callout">
-            <strong>🚧 Work in Progress:</strong> This project is currently under active development. The documentation below reflects the current backend architecture and logic implementation (v0.1).
+            <strong>🚧 Work in Progress:</strong> This project is currently under active development. The documentation below reflects the current backend architecture (v0.1) integrating Markdown Extraction, FAISS retrieval, and K-Means Clustering for summarization.
         </div>
 
         <blockquote>
-            "A privacy-focused document summarization tool powered by Llama 3.1. It uses K-Means Clustering to intelligently select the most relevant document chunks, ensuring comprehensive context coverage without hitting token limits."
+            "A privacy-focused document analysis tool optimized for multilingual and complex reports. It features dual-mode processing: precision Q&A via FAISS vector retrieval, and comprehensive summarization powered by K-Means semantic clustering."
         </blockquote>
 
         <hr>
 
-        <!-- Overview -->
-        <h2>Project Overview</h2>
-        <p>This tool is designed to analyze complex PDF documents locally without sending data to the cloud. Unlike standard RAG (Retrieval-Augmented Generation) systems that simply fetch the "top-k" similar chunks, this system employs <strong>Semantic Clustering</strong>.</p>
-        <p>By clustering document embeddings, the system ensures that the information fed into the LLM is diverse and representative of the entire document, reducing redundancy and improving summary quality.</p>
-
-        <hr>
-
-        <!-- Architecture (Ganti Screenshot) -->
+        <!-- Architecture -->
         <h2>System Architecture & Pipeline</h2>
-        <p>The system follows a strict ETL (Extract, Transform, Load) pipeline optimized for local execution:</p>
+        <p>The system follows a robust ETL (Extract, Transform, Load) pipeline optimized for local execution and maximum contextual understanding:</p>
 
         <!-- CSS Flowchart -->
         <div class="pipeline-container">
             <div class="pipeline-step">
                 <strong>1. Ingestion</strong>
-                PyPDFLoader reads raw PDF files.
+                <code>pymupdf4llm</code> converts PDF directly to Markdown format.
             </div>
             <div class="arrow">→</div>
             <div class="pipeline-step">
                 <strong>2. Chunking</strong>
-                Recursive Character Splitter (2k tokens).
+                <code>MarkdownTextSplitter</code> (2500 chars, 300 overlap).
             </div>
             <div class="arrow">→</div>
             <div class="pipeline-step">
                 <strong>3. Embedding</strong>
-                BAAI/bge-base-en (HuggingFace).
+                <code>multilingual-e5-base</code> via HuggingFace.
             </div>
             <div class="arrow">→</div>
             <div class="pipeline-step">
-                <strong>4. Clustering</strong>
-                K-Means selection (The "Brain").
+                <strong>4. Indexing & Logic</strong>
+                FAISS (Q&A Retrieval)<br>+ K-Means (Summarization).
             </div>
             <div class="arrow">→</div>
             <div class="pipeline-step">
                 <strong>5. Inference</strong>
-                Llama 3.1 via Ollama.
+                Llama 3.1 via Ollama (temperature=0).
             </div>
         </div>
-
-        <h3>Why K-Means Clustering?</h3>
-        <p>In the code logic <code>EmbeddingsClusteringFilter</code>, instead of just taking the first 5 pages, the system:</p>
-        <ul>
-            <li>Converts all text chunks into vector embeddings.</li>
-            <li>Groups these vectors into clusters based on semantic meaning.</li>
-            <li>Selects the "Centroid" (most representative chunk) from each cluster.</li>
-            <li><strong>Result:</strong> The LLM receives a context that covers different topics within the PDF, rather than repeating the same topic 5 times.</li>
-        </ul>
 
         <hr>
 
         <!-- Technical Details -->
         <h2>Key Technical Features</h2>
 
-        <h3>1. Local Privacy First</h3>
-        <p>The system runs entirely offline using <strong>Ollama</strong>. No API keys are required, and sensitive documents (e.g., financial reports, medical records) never leave the local machine.</p>
-
-        <h3>2. Strict Hallucination Control</h3>
-        <p>The prompt engineering includes strict guardrails to prevent the LLM from making things up:</p>
-        <pre><code>
-# System Prompt Logic
-"guidelines": 
-1. Jawab hanya berdasarkan teks konteks.
-2. Pertahankan penamaan tabel dan satuan angka.
-3. Jika data tidak ada, tulis 'Informasi tidak ditemukan'.
-4. Tutup jawaban dengan bagian 'Validasi'.
-        </code></pre>
-
-        <h3>3. Dynamic Resource Handling</h3>
-        <p>The script automatically detects hardware capabilities:</p>
+        <h3>1. Dual Analytical Modes</h3>
+        <p>The system intelligently routes the user request based on the command provided in the CLI:</p>
         <ul>
-            <li><strong>CUDA Support:</strong> Automatically utilizes GPU if available for faster embedding.</li>
-            <li><strong>Fallback:</strong> Gracefully degrades to CPU mode if no GPU is found.</li>
+            <li><strong>Q&A Mode (RAG via FAISS):</strong> By asking a specific question, the system retrieves the Top-8 (<code>MAX_RAG_DOCS</code>) most relevant chunks from the FAISS vector database to answer accurately.</li>
+            <li><strong>Summary Mode (K-Means Clustering):</strong> Triggered by the "ringkas" keyword. Instead of grabbing the first 5 pages, it clusters all text embeddings into distinct semantic groups (up to 5 clusters). It selects the "Centroid" of each group, ensuring the LLM summarizes a diverse representation of the entire document.</li>
         </ul>
 
-        <hr>
+        <h3>2. Local Privacy & Hardware Optimization</h3>
+        <p>Runs entirely offline utilizing <strong>Ollama</strong>. The script dynamically detects hardware capabilities:</p>
+        <ul>
+            <li><strong>CUDA Auto-Detection:</strong> Transparently switches to GPU for blazing-fast <code>intfloat/multilingual-e5-base</code> embedding generation if a capable NVIDIA card is detected.</li>
+            <li><strong>Fallback Mode:</strong> Gracefully defaults to CPU execution without breaking the pipeline.</li>
+        </ul>
 
-        <!-- Roadmap -->
+        <h3>3. Strict Hallucination Control (Prompt Engineering)</h3>
+        <p>To analyze complex financial and technical reports, the prompt is equipped with stringent formatting and factual guardrails:</p>
+        <pre><code>
+# Guidelines Logic
+1. Jawab HANYA berdasarkan teks konteks; bila data tidak ada, tulis 'Informasi tidak ditemukan pada konteks'.
+2. Pertahankan penamaan tabel, label grafik, dan satuan angka persis seperti di sumber.
+3. Saat menyebut angka, sebutkan juga referensi asalnya agar mudah dilacak.
+4. Jika ada tabel, salin ulang dalam format tabel Markdown tanpa mengubah/menambah data.
+5. Tutup jawaban dengan bagian 'Validasi' yang menjelaskan apakah semua permintaan pengguna terpenuhi dari konteks.
+        </code></pre>
+
+        <h3>4. Structural Output Formatting</h3>
+        <p>Responses are heavily structured depending on the task. A Q&A output must contain <em>Jawaban Inti</em>, <em>Referensi Konteks</em>, and <em>Validasi</em>, whereas a Summary output requires <em>Ringkasan Utama</em> and <em>Detail Numerik & Tabel</em>.</p>
+
+        <h2>Demo</h2>
+        <p>Cek demo singkat sistem ini melalui pemutar di bawah atau buka langsung di YouTube:</p>
+        <div class="demo-video">
+            <iframe src="https://www.youtube.com/embed/x7xeVpqf6e0" title="Demo Local RAG" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p><a href="https://youtu.be/x7xeVpqf6e0" target="_blank" rel="noopener noreferrer">https://youtu.be/x7xeVpqf6e0</a></p>
+
+        <hr>
         <h2>Future Roadmap</h2>
         <ul>
-            <li>[ ] <strong>GUI Implementation:</strong> Building a Streamlit/Gradio interface for file upload.</li>
-            <li>[ ] <strong>Multi-file Support:</strong> Enabling analysis across multiple PDFs simultaneously.</li>
-            <li>[ ] <strong>Citation Engine:</strong> Clicking a summary point highlights the source PDF page.</li>
+            <li>[ ] <strong>GUI Implementation:</strong> Building a Streamlit/Gradio interface for interactive file uploads and chat.</li>
+            <li>[ ] <strong>Multi-file Support:</strong> Enabling cross-document analysis by expanding the FAISS vector store scope.</li>
+            <li>[ ] <strong>Citation Engine:</strong> Mapping chunks directly back to the original PDF page number.</li>
         </ul>
 
     </div>
